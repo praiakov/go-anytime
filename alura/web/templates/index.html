@@ -28,6 +28,7 @@
                             <th>Descrição</th>
                             <th>Preço</th>
                             <th>Quantidade</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,6 +38,7 @@
                             <td>{{.Descricao}}</td>
                             <td>{{.Preco}}</td>
                             <td>{{.Quantidade}}</td>
+                            <td><a href="/delete?id={{.Id}}" class="btn btn-danger">Deletar</a></td>
                         </tr>
                         {{end}}
                         </tbody>
