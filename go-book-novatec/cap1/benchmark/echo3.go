@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
-func main() {
+func Echo3() {
 	fmt.Println(strings.Join(os.Args[1:], " "))
+}
+
+func main() {
+	fmt.Println("Hello baby")
 }
