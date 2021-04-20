@@ -1,27 +1,23 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 )
 
 func main() {
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8880", nil)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 
-	keys, ok := r.URL.Query()["key"]
+	key := r.URL.Query().Get("key")
 
-	if !ok || len(keys[0]) < 1 {
-		log.Println("Url Param 'key' is missing")
-		return
-	}
+	// if !ok || len(keys[0]) < 1 {
+	// 	log.Println("Url Param 'key' is missing")
+	// 	return
+	// }
 
-	// Query()["key"] will return an array of items,
-	// we only want the single item.
-	key := keys[0]
-
-	log.Println("Url Param 'key' is: " + string(key))
+	fmt.Fprintf(w, "Url Param 'key' is: "+string(key))
 }
