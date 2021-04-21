@@ -18,6 +18,8 @@ func main() {
 		}
 		f := tempconv.Fahrenheit(t)
 		c := tempconv.Celsius(t)
+		m := tempconv.Metros(t)
 		fmt.Printf("%s = %s, %s = %s\n", f, tempconv.FToC(f), c, tempconv.CToF(c))
+		fmt.Printf("%s = %s", m, tempconv.EToM(m))
 	}
 }
