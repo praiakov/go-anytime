@@ -1,11 +1,11 @@
-package main
+// package main
 
-import (
-	"fmt"
+// import (
+// 	"fmt"
 
-	"github.com/praiakov/tconv/tempconv"
-)
+// 	"github.com/praiakov/tconv/tempconv"
+// )
 
-func main() {
-	fmt.Println(tempconv.KToC(tempconv.KelvinC))
-}
+// func main() {
+// 	fmt.Println(tempconv.KToC(tempconv.KelvinC))
+// }
