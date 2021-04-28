@@ -1,5 +1,5 @@
 // Mandelbrot gera uma imagem PNG do fractal de Mandelbrot.
-package main
+package mandelbrot
 
 import (
 	"image"
