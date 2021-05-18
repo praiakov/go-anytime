@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/praiakov/webapi/models"
+	entities "github.com/praiakov/webapi/core"
 )
 
-var people []models.Person
+var people []entities.Person
 
 func GetPeople(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(people)
@@ -22,12 +22,12 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	json.NewEncoder(w).Encode(&models.Person{})
+	json.NewEncoder(w).Encode(&entities.Person{})
 }
 
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	person := models.Person{}
+	person := entities.Person{}
 	_ = json.NewDecoder(r.Body).Decode(&person)
 	person.ID = params["id"]
 	people = append(people, person)
@@ -46,8 +46,8 @@ func DeletePerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoadData() {
-	people = append(people, models.Person{ID: "1", Firstname: "John", Lastname: "Doe", Address: &models.Address{City: "City X", State: "State X"}})
-	people = append(people, models.Person{ID: "2", Firstname: "Koko", Lastname: "Doe", Address: &models.Address{City: "City Z", State: "State Y"}})
-	people = append(people, models.Person{ID: "3", Firstname: "Francis", Lastname: "Sunday"})
+	people = append(people, entities.Person{ID: "1", Firstname: "John", Lastname: "Doe", Address: &entities.Address{City: "City X", State: "State X"}})
+	people = append(people, entities.Person{ID: "2", Firstname: "Koko", Lastname: "Doe", Address: &entities.Address{City: "City Z", State: "State Y"}})
+	people = append(people, entities.Person{ID: "3", Firstname: "Francis", Lastname: "Sunday"})
 
 }
