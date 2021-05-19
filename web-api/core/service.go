@@ -20,7 +20,7 @@ func NewService(db *sql.DB) *Service {
 func (s *Service) GetPeople() ([]*Person, error) {
 	var result []*Person
 
-	rows, err := s.DB.Query("select id, firtname, lastname from peoples")
+	rows, err := s.DB.Query("SELECT p.id, p.firtname, p.lastname, a.city, a.name_state FROM peoples AS p INNER JOIN adresses as a ON p.id = a.person_id")
 
 	if err != nil {
 		return nil, err
@@ -30,7 +30,10 @@ func (s *Service) GetPeople() ([]*Person, error) {
 
 	for rows.Next() {
 		var p Person
-		err = rows.Scan(&p.ID, &p.Firstname, &p.Lastname)
+		var a Address
+		p.Address = &a
+
+		err = rows.Scan(&p.ID, &p.Firstname, &p.Lastname, &p.Address.City, &p.Address.State)
 		if err != nil {
 			return nil, err
 		}
