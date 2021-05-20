@@ -22,6 +22,10 @@ func MakePersonHandlers(r *mux.Router, n *negroni.Negroni, service core.UseCase)
 	r.Handle("/v1/person", n.With(
 		negroni.Wrap(CreatePerson(service)),
 	)).Methods("POST", "OPTIONS")
+
+	r.Handle("/v1/person/{id}", n.With(
+		negroni.Wrap(RemovePerson(service)),
+	)).Methods("DELETE", "OPTIONS")
 }
 
 func GetAllPeople(service core.UseCase) http.Handler {
@@ -53,14 +57,14 @@ func GetPersonById(service core.UseCase) http.Handler {
 			w.Write(formatJSONError(err.Error()))
 			return
 		}
-		b, err := service.GetPerson(id)
+		p, err := service.GetPerson(id)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			w.Write(formatJSONError(err.Error()))
 			return
 		}
 
-		err = json.NewEncoder(w).Encode(b)
+		err = json.NewEncoder(w).Encode(p)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write(formatJSONError("Erro convertendo em JSON"))
@@ -92,5 +96,28 @@ func CreatePerson(service core.UseCase) http.Handler {
 			return
 		}
 		w.WriteHeader(http.StatusCreated)
+	})
+}
+
+func RemovePerson(service core.UseCase) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		vars := mux.Vars(r)
+
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write(formatJSONError(err.Error()))
+			return
+		}
+
+		err = service.DeletePerson(id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(formatJSONError(err.Error()))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	})
 }

@@ -1,12 +1,15 @@
 package core
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
 type UseCase interface {
 	GetPeople() ([]*Person, error)
 	GetPerson(id int64) (*Person, error)
 	CreatePerson(p *Person) error
-	// DeletePerson(id int64) error
+	DeletePerson(id int64) error
 }
 
 type Service struct {
@@ -69,7 +72,7 @@ func (s *Service) CreatePerson(p *Person) error {
 	if err != nil {
 		return err
 	}
-	stmt, err := tx.Prepare("WITH person as (insert into peoples(firtname,lastname) values($1, $2) RETURNING id) insert into adresses (city, name_state, person_id) values ($3, $4, (select id from person))")
+	stmt, err := tx.Prepare("WITH person AS (INSERT INTO peoples(firtname,lastname) VALUES($1, $2) RETURNING id) INSERTO INTO adresses (city, name_state, person_id) VALUES ($3, $4, (select id from person))")
 	if err != nil {
 		return err
 	}
@@ -77,6 +80,24 @@ func (s *Service) CreatePerson(p *Person) error {
 	defer stmt.Close()
 	_, err = stmt.Exec(p.Firstname, p.Lastname, p.Address.City, p.Address.State)
 
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
+	return nil
+}
+
+func (s *Service) DeletePerson(id int64) error {
+	if id == 0 {
+		return fmt.Errorf("invalid ID")
+	}
+
+	tx, err := s.DB.Begin()
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec("DELETE FROM peoples where id=$1", id)
 	if err != nil {
 		tx.Rollback()
 		return err
