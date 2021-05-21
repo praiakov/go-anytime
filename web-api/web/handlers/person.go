@@ -12,23 +12,27 @@ import (
 
 func MakePersonHandlers(r *mux.Router, n *negroni.Negroni, service core.UseCase) {
 	r.Handle("/v1/person", n.With(
-		negroni.Wrap(GetAllPeople(service))),
+		negroni.Wrap(getAllPeople(service))),
 	).Methods("GET", "OPTIONS")
 
 	r.Handle("/v1/person/{id}", n.With(
-		negroni.Wrap(GetPersonById(service)),
+		negroni.Wrap(getPersonById(service)),
 	)).Methods("GET", "OPTIONS")
 
 	r.Handle("/v1/person", n.With(
-		negroni.Wrap(CreatePerson(service)),
+		negroni.Wrap(createPerson(service)),
 	)).Methods("POST", "OPTIONS")
 
 	r.Handle("/v1/person/{id}", n.With(
-		negroni.Wrap(RemovePerson(service)),
+		negroni.Wrap(updatePerson(service)),
+	)).Methods("PUT", "OPTIONS")
+
+	r.Handle("/v1/person/{id}", n.With(
+		negroni.Wrap(removePerson(service)),
 	)).Methods("DELETE", "OPTIONS")
 }
 
-func GetAllPeople(service core.UseCase) http.Handler {
+func getAllPeople(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		all, err := service.GetPeople()
@@ -46,7 +50,7 @@ func GetAllPeople(service core.UseCase) http.Handler {
 	})
 }
 
-func GetPersonById(service core.UseCase) http.Handler {
+func getPersonById(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -73,7 +77,7 @@ func GetPersonById(service core.UseCase) http.Handler {
 	})
 }
 
-func CreatePerson(service core.UseCase) http.Handler {
+func createPerson(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -99,7 +103,7 @@ func CreatePerson(service core.UseCase) http.Handler {
 	})
 }
 
-func RemovePerson(service core.UseCase) http.Handler {
+func removePerson(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -113,6 +117,35 @@ func RemovePerson(service core.UseCase) http.Handler {
 		}
 
 		err = service.DeletePerson(id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(formatJSONError(err.Error()))
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	})
+}
+
+func updatePerson(service core.UseCase) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		var p core.Person
+		var a core.Address
+		p.Address = &a
+		err := json.NewDecoder(r.Body).Decode(&p)
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write(formatJSONError(err.Error()))
+			return
+		}
+		vars := mux.Vars(r)
+		id, err := strconv.ParseInt(vars["id"], 10, 64)
+		p.ID = strconv.FormatInt(id, 10)
+
+		err = service.UpdatePerson(&p)
+
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write(formatJSONError(err.Error()))

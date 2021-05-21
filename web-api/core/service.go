@@ -9,6 +9,7 @@ type UseCase interface {
 	GetPeople() ([]*Person, error)
 	GetPerson(id int64) (*Person, error)
 	CreatePerson(p *Person) error
+	UpdatePerson(p *Person) error
 	DeletePerson(id int64) error
 }
 
@@ -104,4 +105,33 @@ func (s *Service) DeletePerson(id int64) error {
 	}
 	tx.Commit()
 	return nil
+}
+
+func (s *Service) UpdatePerson(p *Person) error {
+	if p.ID == "" {
+		return fmt.Errorf("invalid ID")
+	}
+
+	tx, err := s.DB.Begin()
+	if err != nil {
+		return err
+	}
+
+	stmt, err := tx.Prepare("WITH person AS (UPDATE peoples SET firtname= $1, lastname= $2 WHERE id = $3 RETURNING id) UPDATE adresses AS a SET city = $4, name_state = $5 WHERE a.person_id = (select id from person)")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer stmt.Close()
+	_, err = stmt.Exec(p.Firstname, p.Lastname, p.ID, p.Address.City, p.Address.State)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+
+	return nil
+
 }
