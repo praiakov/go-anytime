@@ -17,7 +17,7 @@ func main() {
 		if err != nil {
 			log.Print(err) // por ex, conexao abortadada
 		}
-		handleCon(conn) // trata uma conexao de cada vez
+		go handleCon(conn) // trata conexoes de forma concorrente
 	}
 }
 
