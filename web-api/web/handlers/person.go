@@ -32,6 +32,12 @@ func MakePersonHandlers(r *mux.Router, n *negroni.Negroni, service core.UseCase)
 	)).Methods("DELETE", "OPTIONS")
 }
 
+// @Summary Get details of all people
+// @Tags people
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} core.Person
+// @Router /person [get]
 func getAllPeople(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -50,6 +56,13 @@ func getAllPeople(service core.UseCase) http.Handler {
 	})
 }
 
+// @Summary Get person by id
+// @Tags people
+// @Accept  json
+// @Produce  json
+// @Param   id     path    string     true		"person id"
+// @Success 200 {array} core.Person
+// @Router /person/{id} [get]
 func getPersonById(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -77,6 +90,13 @@ func getPersonById(service core.UseCase) http.Handler {
 	})
 }
 
+// @Summary Create person
+// @Tags people
+// @Accept json
+// @Produce json
+// @Param message body core.Person true "Person Info"
+// @Success 200 {string} string "OK"
+// @Router /person [post]
 func createPerson(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -103,6 +123,13 @@ func createPerson(service core.UseCase) http.Handler {
 	})
 }
 
+// @Summary Delete person
+// @Tags people
+// @Accept json
+// @Produce json
+// @Param   id     path    string     true		"person id"
+// @Success 200  {string} string "OK"
+// @Router /person/{id} [delete]
 func removePerson(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -126,6 +153,13 @@ func removePerson(service core.UseCase) http.Handler {
 	})
 }
 
+// @Summary Update a person
+// @Tags people
+// @Accept  json
+// @Produce  json
+// @Success 200 {string} string	"OK"
+// @Param   id     path    string     true		"person id"
+// @Router /person/{id} [put]
 func updatePerson(service core.UseCase) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

@@ -73,7 +73,7 @@ func (s *Service) CreatePerson(p *Person) error {
 	if err != nil {
 		return err
 	}
-	stmt, err := tx.Prepare("WITH person AS (INSERT INTO peoples(firtname,lastname) VALUES($1, $2) RETURNING id) INSERTO INTO adresses (city, name_state, person_id) VALUES ($3, $4, (select id from person))")
+	stmt, err := tx.Prepare("WITH person AS (INSERT INTO peoples(firtname,lastname) VALUES($1, $2) RETURNING id) INSERT INTO adresses (city, name_state, person_id) VALUES ($3, $4, (select id from person))")
 	if err != nil {
 		return err
 	}

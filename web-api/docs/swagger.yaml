@@ -1,0 +1,126 @@
+definitions:
+  core.Address:
+    properties:
+      city:
+        type: string
+      state:
+        type: string
+    type: object
+  core.Person:
+    properties:
+      address:
+        $ref: '#/definitions/core.Address'
+      firstname:
+        type: string
+      id:
+        type: string
+      lastname:
+        type: string
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+paths:
+  /person:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/core.Person'
+            type: array
+      summary: Get details of all people
+      tags:
+      - people
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Person Info
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/core.Person'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Create person
+      tags:
+      - people
+  /person/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: person id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Delete person
+      tags:
+      - people
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: person id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/core.Person'
+            type: array
+      summary: Get person by id
+      tags:
+      - people
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: person id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Update a person
+      tags:
+      - people
+swagger: "2.0"
