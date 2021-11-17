@@ -1,7 +1,7 @@
 package models
 
 import (
-	"example.com/db"
+	"github.com/praiakov/web/db"
 )
 
 type Produto struct {

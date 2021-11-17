@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"example.com/models"
+	"github.com/praiakov/web/models"
 )
 
 var temple = template.Must(template.ParseGlob("templates/*.html"))

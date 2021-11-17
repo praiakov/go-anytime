@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"example.com/controllers"
+	"github.com/praiakov/web/controllers"
 )
 
 func CarregaRotas() {
